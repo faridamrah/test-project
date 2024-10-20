@@ -101,3 +101,22 @@ python test_cases_local.py
 ```
 The script will automatically open the Chrome browser in headless mode (i.e., no visible browser window) and perform the web tests.
 
+# Inter-pod communication
+
+
+### Environment Variables
+
+- **`CHROME_NODE_SERVICE`**: Specifies the service name of the Selenium Hub. The default value is set to `selenium-hub`. Ensure that this variable is set to the correct service name in your Kubernetes deployment.
+
+## Architecture
+
+The framework uses inter-pod communication to interact with the Selenium infrastructure:
+
+1. **Test Case Controller**: This is the main script that contains various test cases.
+2. **Selenium Hub Communication**: The test case controller communicates with the Selenium Hub using the `selenium_hub_url`. This URL is constructed using the `CHROME_NODE_SERVICE` environment variable, allowing the controller to send requests to the Hub.
+
+3. **Request Flow**:
+   - The test case controller checks the status of the Selenium Hub by sending a request to `http://{CHROME_NODE_SERVICE}:4444/wd/hub/status`.
+   - If the Selenium Hub is available and ready, the controller sends test execution requests to it.
+   - The Selenium Hub receives these requests and forwards them to the available Chrome node pods for execution.
+   - Once the tests are executed, the results are logged by the test case controller.
