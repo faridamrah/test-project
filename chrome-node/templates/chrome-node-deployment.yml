@@ -5,7 +5,7 @@ metadata:
   labels:
     app: selenium-node-chrome
 spec:
-  replicas: 1
+  replicas: {{ .Values.chrome_node.replica_count }}
   selector:
     matchLabels:
       app: selenium-node-chrome
@@ -20,9 +20,9 @@ spec:
           medium: Memory
       containers:
       - name: selenium-node-chrome
-        image: selenium/node-chrome:latest
+        image: {{ .Values.chrome_node.image }}
         ports:
-          - containerPort: 5555
+          - containerPort: {{ .Values.chrome_node.ports.containerport }}
         volumeMounts:
           - mountPath: /dev/shm
             name: dshm

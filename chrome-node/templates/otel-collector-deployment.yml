@@ -11,7 +11,7 @@ metadata:
   name: otel-collector
   namespace: log
 spec:
-  replicas: 1
+  replicas: {{ .Values.otel_collector.replica_count }}
   selector:
     matchLabels:
       app: otel-collector
@@ -22,26 +22,7 @@ spec:
     spec:
       containers:
         - name: otel-collector
-          image: otel/opentelemetry-collector:latest
+          image: {{ .Values.otel_collector.image }}
           ports:
-            - containerPort: 4317
+            - containerPort: {{ .Values.otel_collector.port }}
               name: otlp-grpc
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: otel-collector
-  namespace: log
-  labels:
-    app: otel-collector
-spec:
-  ports:
-    - name: otlp-grpc
-      port: 4317
-      targetPort: 4317
-  selector:
-    app: otel-collector
-  type: ClusterIP
-

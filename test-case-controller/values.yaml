@@ -1,0 +1,5 @@
+test_case_controller:
+  image: "farid987/test_case:v14"
+  ports:
+    containerport: 8080
+    serviceport: 80

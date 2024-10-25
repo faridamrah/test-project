@@ -5,7 +5,7 @@ metadata:
   labels:
     app: selenium-hub
 spec:
-  replicas: 1
+  replicas: {{ .Values.selenium_hub.replica_count }}
   selector:
     matchLabels:
       app: selenium-hub
@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
       - name: selenium-hub
-        image: selenium/hub:4.0
+        image: {{ .Values.selenium_hub.image }}
         ports:
-          - containerPort: 4444
-          - containerPort: 4443
-          - containerPort: 4442
+          - containerPort: {{ .Values.selenium_hub.ports.webdriver_port }}
+          - containerPort: {{ .Values.selenium_hub.ports.secure_webdriver_port }}
+          - containerPort: {{ .Values.selenium_hub.ports.health_check_port }}
         resources:
           limits:
             memory: "1000Mi"
@@ -28,12 +28,12 @@ spec:
         livenessProbe:
           httpGet:
             path: /wd/hub/status
-            port: 4444
+            port: {{ .Values.selenium_hub.ports.webdriver_port }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /wd/hub/status
-            port: 4444
+            port: {{ .Values.selenium_hub.ports.webdriver_port }}
           initialDelaySeconds: 30
           timeoutSeconds: 5

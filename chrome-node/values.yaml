@@ -1,0 +1,20 @@
+selenium_hub:
+  ports:
+    webdriver_port: 4444
+    secure_webdriver_port: 4443
+    health_check_port: 4442
+  image: "selenium/hub:4.0"
+  replica_count: 1
+
+otel_collector:
+  port: 4317
+  replica_count: 1
+  image: "otel/opentelemetry-collector:latest"
+
+chrome_node:
+  ports:
+    containerport: 5555
+    serviceport: 4444
+  image: "selenium/node-chrome:latest"
+  replica_count: 1
+

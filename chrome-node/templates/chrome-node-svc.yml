@@ -7,6 +7,6 @@ spec:
     app: selenium-chrome-node
   ports:
     - protocol: TCP
-      port: 4444
-      targetPort: 4444
+      port: {{ .Values.chrome_node.ports.serviceport }}
+      targetPort: {{ .Values.chrome_node.ports.serviceport }}
   clusterIP: None

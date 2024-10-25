@@ -23,8 +23,8 @@ To deploy and run the Selenium Grid and WebDriver service within Kubernetes, fol
 
 1. **Clone the repository** (if applicable) containing the Selenium Grid configuration and the `apply_k8s.sh` script.
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/faridamrah/test-project.git
+   cd test-project
 
 2. **Execute the apply_k8s.sh Script:** The apply_k8s.sh script will apply the necessary Kubernetes configurations to deploy the Selenium Hub and Chrome nodes. Run the following command:
    ```bash
@@ -120,3 +120,69 @@ The framework uses inter-pod communication to interact with the Selenium infrast
    - If the Selenium Hub is available and ready, the controller sends test execution requests to it.
    - The Selenium Hub receives these requests and forwards them to the available Chrome node pods for execution.
    - Once the tests are executed, the results are logged by the test case controller.
+
+# Helm Chart Deployment Script
+
+This Python script automates the deployment of Helm charts to a Kubernetes cluster. It first attempts to load the kubeconfig from the default location, and if that fails, it prompts the user for the path to their kubeconfig file. The script deploys two Helm charts: `chrome-node` and `test-case-controller`, in that specific order.
+
+## Prerequisites
+
+Before using this script, ensure that you have the following installed:
+
+- **Python** (version 3.6 or higher)
+- **Helm** (version 3.x)
+- **Kubernetes CLI (`kubectl`)** (for interacting with the Kubernetes cluster)
+
+## Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/faridamrah/test-project.git
+   cd test-project
+   ```
+2. Install the required Python packages:
+
+   ```bash
+   pip install kubernetes 
+
+   or
+
+   pip install -r python/deployment/requirements.txt
+   ```
+3. Ensure that Helm is installed. You can install Helm by running:
+   ```bash
+   curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+   ```
+
+## Usage
+
+1. Place your Helm chart folders (`chrome-node` and `test-case-controller`) in the same directory as the script, or modify the paths in the script to point to their locations.
+
+2. Run the script:
+
+   ```bash
+   python python/deployment/deploy_helm.py
+   ```
+
+3. If the script does not find the kubeconfig at the default location (`~/.kube/config)`, it will prompt you to provide the path to your kubeconfig file.
+
+4. Script will list all contexts from the kubeconfig file. If multiple contexts are available, it will prompt the user to select one of them before proceeding with the Helm chart deployments.
+
+## How It Works
+
+- **Load Kubeconfig**: The script first tries to load the kubeconfig from the default location. If it fails, it prompts the user for an alternative path.
+- **Deploy Helm Charts**: The script deploys the Helm charts using the `helm upgrade --install` command. The charts are applied in the order specified in the script (first `chrome-node`, then `test-case-controller`).
+- **Error Handling:** The script includes error handling for kubeconfig loading and Helm command execution, providing clear feedback for troubleshooting.
+
+## Example Output
+
+```
+Successfully loaded kubeconfig from the default location.
+Deploying chrome-node from ./chrome-node...
+Running command: helm upgrade --install chrome-node ./chrome-node
+Successfully deployed chrome-node.
+Deploying test-case-controller from ./test-case-controller...
+Running command: helm upgrade --install test-case-controller ./test-case-controller
+Successfully deployed test-case-controller.
+```

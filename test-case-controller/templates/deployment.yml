@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-case-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-case-controller
+  template:
+    metadata:
+      labels:
+        app: test-case-controller
+    spec:
+      containers:
+        - name: test-case-controller
+          image: {{ .Values.test_case_controller.image }}
+          ports:
+            - containerPort: {{ .Values.test_case_controller.ports.containerport }}
+          env:
+            - name: CHROME_NODE_SERVICE
+              value: "selenium-hub"
